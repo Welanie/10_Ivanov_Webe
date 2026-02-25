@@ -1,1 +1,428 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>СУПЕР ПРЕМЬЕРА: Приключения Роналду и Месси</title>
+  <style>
+    :root {
+      --main: #ff2d2d;
+      --accent: #ffd800;
+      --dark: #171717;
+      --card: #fff;
+      --ok: #0a8f3d;
+    }
 
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Trebuchet MS", "Arial Black", Arial, sans-serif;
+      color: var(--dark);
+      background:
+        repeating-linear-gradient(
+          -45deg,
+          #fff4d8,
+          #fff4d8 18px,
+          #ffeaa9 18px,
+          #ffeaa9 36px
+        );
+      min-width: 320px;
+    }
+
+    .top-alert {
+      background: var(--main);
+      color: #fff;
+      text-align: center;
+      font-weight: 900;
+      padding: 10px 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.75; }
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr) 220px;
+      gap: 14px;
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 14px;
+    }
+
+    .side-ad {
+      background: linear-gradient(160deg, #fff 0%, #ffd6d6 100%);
+      border: 4px dashed var(--main);
+      padding: 12px;
+      border-radius: 12px;
+      height: fit-content;
+      position: sticky;
+      top: 58px;
+    }
+
+    .ad-title {
+      margin: 0 0 8px;
+      text-transform: uppercase;
+      font-size: 18px;
+      line-height: 1.1;
+      color: var(--main);
+    }
+
+    .ad-btn {
+      display: block;
+      width: 100%;
+      border: 0;
+      border-radius: 999px;
+      background: var(--main);
+      color: #fff;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 10px;
+      margin-top: 10px;
+      cursor: pointer;
+      animation: pulse 1.1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+
+    .main {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .hero,
+    .reasons,
+    .slogans,
+    .reviews,
+    .video-section,
+    .cta {
+      background: var(--card);
+      border: 4px solid #111;
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 6px 6px 0 #000;
+    }
+
+    h1, h2, h3, p {
+      margin: 0;
+    }
+
+    .hero h1 {
+      font-size: clamp(24px, 4vw, 42px);
+      line-height: 1.05;
+      color: var(--main);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .hero p {
+      font-size: clamp(14px, 2.5vw, 20px);
+      font-weight: 700;
+    }
+
+    .reasons h2,
+    .slogans h2,
+    .reviews h2,
+    .video-section h2,
+    .cta h2 {
+      font-size: clamp(20px, 3.5vw, 30px);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .reasons-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+
+    .reason {
+      background: #fff9c6;
+      border: 3px solid #111;
+      border-radius: 10px;
+      padding: 10px;
+      font-weight: 700;
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .reason-num {
+      font-size: 26px;
+      color: var(--main);
+      font-weight: 900;
+    }
+
+    .slogan-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .slogan {
+      padding: 10px 12px;
+      border: 3px solid #111;
+      border-radius: 999px;
+      background: var(--accent);
+      font-weight: 900;
+      text-transform: uppercase;
+      transform: rotate(-1deg);
+    }
+
+    .reviews-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .review {
+      border: 3px solid #111;
+      border-radius: 10px;
+      padding: 10px;
+      background: #f4ffef;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .review .name {
+      font-weight: 900;
+      color: var(--ok);
+    }
+
+    .videos-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .video-card {
+      border: 3px solid #111;
+      border-radius: 10px;
+      padding: 12px;
+      background: #fff;
+    }
+
+    .video-card video {
+      width: 100%;
+      display: block;
+      border-radius: 8px;
+      background: #000;
+      aspect-ratio: 9 / 16;
+      min-height: 420px;
+      object-fit: cover;
+    }
+
+    .slot-note {
+      margin-top: 8px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .cta {
+      text-align: center;
+      background: linear-gradient(120deg, #ffe879 0%, #ffbaba 100%);
+    }
+
+    .cta p {
+      margin-top: 8px;
+      font-weight: 800;
+    }
+
+    .cta button {
+      margin-top: 12px;
+      background: var(--main);
+      color: #fff;
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font-size: 18px;
+      font-weight: 900;
+      text-transform: uppercase;
+      cursor: pointer;
+      animation: pulse 1s infinite;
+    }
+
+    @media (max-width: 1100px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .side-ad {
+        position: static;
+      }
+
+      .reasons-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .videos-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 700px) {
+      .reasons-grid,
+      .reviews-list,
+      .videos-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero,
+      .reasons,
+      .slogans,
+      .reviews,
+      .video-section,
+      .cta {
+        padding: 12px;
+      }
+
+      .video-card video {
+        min-height: 360px;
+      }
+
+      .top-alert {
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-alert">ВНИМАНИЕ: ЭТО САМАЯ ГРОМКАЯ ПРЕМЬЕРА 2026 ГОДА. НЕ ПРОЛИСТЫВАЙ!</div>
+
+  <div class="layout">
+    <aside class="side-ad">
+      <h3 class="ad-title">Сомнительный бонус №1</h3>
+      <p>Купи просмотр сейчас и получи 999% мотивации на утро понедельника.</p>
+      <button class="ad-btn">Забрать бонус</button>
+    </aside>
+
+    <main class="main">
+      <section class="hero">
+        <h1>Приключения Криштиану Роналду и Месси</h1>
+        <p>Эпичнее футбола, громче трибун, без шанса остаться равнодушным. Видео, которое все обсуждают.</p>
+      </section>
+
+      <section class="reasons">
+        <h2>Топ-5 причин, почему это нужно именно тебе</h2>
+        <div class="reasons-grid">
+          <article class="reason">
+            <span class="reason-num">1</span>
+            <p>Ты увидишь дуэт легенд в сюжете, который невозможен в обычной реальности.</p>
+          </article>
+          <article class="reason">
+            <span class="reason-num">2</span>
+            <p>Можно смотреть с друзьями и спорить, где момент круче, чем в финале ЛЧ.</p>
+          </article>
+          <article class="reason">
+            <span class="reason-num">3</span>
+            <p>Идеально для вдохновения перед тренировкой или любой важной задачей.</p>
+          </article>
+          <article class="reason">
+            <span class="reason-num">4</span>
+            <p>Контент выглядит так, будто его бюджет больше, чем у космической миссии.</p>
+          </article>
+          <article class="reason">
+            <span class="reason-num">5</span>
+            <p>Если не посмотришь сейчас, завтра о нем уже будут говорить все вокруг.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="slogans">
+        <h2>Лозунги для мужчинских мужчин</h2>
+        <div class="slogan-list">
+          <span class="slogan">СМОТРИ СЕЙЧАС ИЛИ ПОЖАЛЕЕШЬ В 23:59</span>
+          <span class="slogan">1 КЛИК = 1 ПОРЦИЯ ЭПИКА</span>
+          <span class="slogan">НЕ СМОТРИШЬ? ЗНАЧИТ ТЫ ЕЩЕ НЕ ГОТОВ К ЛЕГЕНДАМ</span>
+          <span class="slogan">РОНАЛДУ + МЕССИ = ВЗРЫВ МОТИВАЦИИ</span>
+          <span class="slogan">ЭТО НЕ РЕКЛАМА. ЭТО СУДЬБА.</span>
+        </div>
+      </section>
+
+      <section class="reviews">
+        <h2>Отзывы зрителей</h2>
+        <div class="reviews-list">
+          <article class="review">
+            <p class="name">Ян, 18 лет</p>
+            <p>"Хотел посмотреть 2 минуты, в итоге пересматривал три раза и опоздал на пару."</p>
+          </article>
+          <article class="review">
+            <p class="name">Алина, 24 года</p>
+            <p>"Слишком громко, слишком пафосно, слишком круто. Да, я в восторге."</p>
+          </article>
+          <article class="review">
+            <p class="name">Никита, 27 лет</p>
+            <p>"Теперь каждое утро включаю этот ролик вместо будильника. Соседи тоже в курсе."</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="video-section">
+        <h2>Видео-подборка</h2>
+        <div class="videos-grid">
+          <article class="video-card">
+            <video class="hover-play" controls muted playsinline preload="metadata" src="./assets/video/messi-ronaldo-best-moments.mp4">
+              Ваш браузер не поддерживает видео.
+            </video>
+            <p class="slot-note">Лучшие моменты Месси и Роналду</p>
+          </article>
+          <article class="video-card">
+            <video class="hover-play" controls muted playsinline preload="metadata" src="./assets/video/ronaldo-funniest-part-1.mp4">
+              Ваш браузер не поддерживает видео.
+            </video>
+            <p class="slot-note">Самые смешные моменты с Роналду, часть 1</p>
+          </article>
+          <article class="video-card">
+            <video class="hover-play" controls muted playsinline preload="metadata" src="./assets/video/top-5-messi-ronaldo-moments.mp4">
+              Ваш браузер не поддерживает видео.
+            </video>
+            <p class="slot-note">Топ-5 моментов Месси и Роналду</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="cta">
+        <h2>Нажми, пока предложение "не исчезло"</h2>
+        <p>Осталось: 00:14:59 до конца супер-мега-ультра акции*</p>
+        <button type="button">ХОЧУ СМОТРЕТЬ ПРЯМО СЕЙЧАС</button>
+      </section>
+    </main>
+
+    <aside class="side-ad">
+      <h3 class="ad-title">Сомнительный бонус №2</h3>
+      <p>Только сегодня: подписка на «энергию победителя» всего за 0.99$ в минуту.</p>
+      <button class="ad-btn">Оформить мгновенно</button>
+    </aside>
+  </div>
+  <script>
+    const hoverVideos = document.querySelectorAll(".hover-play");
+
+    hoverVideos.forEach((video) => {
+      video.addEventListener("mouseenter", () => {
+        video.play().catch(() => {});
+      });
+
+      video.addEventListener("mouseleave", () => {
+        video.pause();
+        video.currentTime = 0;
+      });
+    });
+  </script>
+</body>
+</html>
