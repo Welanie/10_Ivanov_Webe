@@ -2,6 +2,8 @@
 
 const COOKIE_CONSENT_NAME = "cookie_consent";
 const REVIEW_COOKIE_NAME = "site_reviews";
+const LOCAL_STORAGE_CONSENT_KEY = "site_cookie_consent";
+const LOCAL_STORAGE_REVIEWS_KEY = "site_reviews_fallback";
 const REVIEW_LIMITS = Object.freeze({
   maxStoredReviews: 8,
   nameLength: 40,
@@ -86,11 +88,42 @@ function deleteCookie(name, options = {}) {
   });
 }
 
-function readConsent() {
-  const value = getCookie(COOKIE_CONSENT_NAME);
+function readLocalStorage(key) {
+  try {
+    return window.localStorage.getItem(key);
+  } catch (error) {
+    return null;
+  }
+}
 
-  if (value === "accepted" || value === "rejected") {
-    return value;
+function writeLocalStorage(key, value) {
+  try {
+    window.localStorage.setItem(key, value);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+function removeLocalStorage(key) {
+  try {
+    window.localStorage.removeItem(key);
+  } catch (error) {
+    return;
+  }
+}
+
+function readConsent() {
+  const cookieValue = getCookie(COOKIE_CONSENT_NAME);
+
+  if (cookieValue === "accepted" || cookieValue === "rejected") {
+    return cookieValue;
+  }
+
+  const localStorageValue = readLocalStorage(LOCAL_STORAGE_CONSENT_KEY);
+
+  if (localStorageValue === "accepted" || localStorageValue === "rejected") {
+    return localStorageValue;
   }
 
   return "unknown";
@@ -101,10 +134,12 @@ function saveConsent(value) {
     return "unknown";
   }
 
+  writeLocalStorage(LOCAL_STORAGE_CONSENT_KEY, value);
   setCookie(COOKIE_CONSENT_NAME, value, CONSENT_COOKIE_OPTIONS);
 
   if (value === "rejected") {
     deleteCookie(REVIEW_COOKIE_NAME, REVIEW_COOKIE_OPTIONS);
+    removeLocalStorage(LOCAL_STORAGE_REVIEWS_KEY);
   }
 
   return value;
@@ -146,17 +181,14 @@ function readReviews() {
     return [];
   }
 
-  const rawValue = getCookie(REVIEW_COOKIE_NAME);
-
-  if (!rawValue) {
-    return [];
-  }
+  const rawValue = getCookie(REVIEW_COOKIE_NAME) || readLocalStorage(LOCAL_STORAGE_REVIEWS_KEY);
 
   try {
-    const parsedValue = JSON.parse(rawValue);
+    const parsedValue = rawValue ? JSON.parse(rawValue) : [];
     return normalizeStoredReviews(parsedValue);
   } catch (error) {
     deleteCookie(REVIEW_COOKIE_NAME, REVIEW_COOKIE_OPTIONS);
+    removeLocalStorage(LOCAL_STORAGE_REVIEWS_KEY);
     return [];
   }
 }
@@ -167,9 +199,12 @@ function saveReviews(reviews) {
   }
 
   const normalizedReviews = normalizeStoredReviews(reviews);
+  const serializedReviews = JSON.stringify(normalizedReviews);
+
+  writeLocalStorage(LOCAL_STORAGE_REVIEWS_KEY, serializedReviews);
   setCookie(
     REVIEW_COOKIE_NAME,
-    JSON.stringify(normalizedReviews),
+    serializedReviews,
     REVIEW_COOKIE_OPTIONS
   );
 
@@ -184,5 +219,6 @@ window.reviewCookieStore = Object.freeze({
   saveReviews,
   clearReviews() {
     deleteCookie(REVIEW_COOKIE_NAME, REVIEW_COOKIE_OPTIONS);
+    removeLocalStorage(LOCAL_STORAGE_REVIEWS_KEY);
   }
 });

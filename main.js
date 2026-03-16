@@ -104,6 +104,10 @@ function setFieldError(fieldName, message) {
 }
 
 function setStatus(message, state = "") {
+  if (!reviewStatus) {
+    return;
+  }
+
   reviewStatus.textContent = message;
   reviewStatus.dataset.state = state;
 }
@@ -171,6 +175,10 @@ function syncReviewsFromCookies() {
 }
 
 function updateCookieBanner() {
+  if (!cookieBanner) {
+    return;
+  }
+
   const consent = reviewStorage ? reviewStorage.getConsent() : "unknown";
   const shouldShowBanner = consent === "unknown";
 
@@ -221,7 +229,11 @@ function handleReviewSubmit(event) {
   if (!reviewStorage || reviewStorage.getConsent() !== "accepted") {
     setStatus("Чтобы сохранить отзыв в cookie, сначала примите их в баннере внизу страницы.", "error");
     updateCookieBanner();
-    cookieBanner.scrollIntoView({ behavior: "smooth", block: "end" });
+
+    if (cookieBanner) {
+      cookieBanner.scrollIntoView({ behavior: "smooth", block: "end" });
+    }
+
     return;
   }
 
@@ -278,8 +290,11 @@ function init() {
 
   themeToggleButton.addEventListener("click", handleThemeToggle);
   reviewForm.addEventListener("submit", handleReviewSubmit);
-  cookieAcceptButton.addEventListener("click", handleCookieAccept);
-  cookieRejectButton.addEventListener("click", handleCookieReject);
+
+  if (cookieAcceptButton && cookieRejectButton) {
+    cookieAcceptButton.addEventListener("click", handleCookieAccept);
+    cookieRejectButton.addEventListener("click", handleCookieReject);
+  }
 }
 
 init();
