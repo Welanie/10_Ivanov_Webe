@@ -34,6 +34,9 @@ const reviewStatus = document.querySelector("#review-status");
 const nameInput = document.querySelector("#review-name");
 const textInput = document.querySelector("#review-text");
 const hoverVideos = document.querySelectorAll(".hover-play");
+const cookieBanner = document.querySelector("#cookie-banner");
+const cookieAcceptButton = document.querySelector("#cookie-accept");
+const cookieRejectButton = document.querySelector("#cookie-reject");
 
 let userReviews = reviewStorage ? reviewStorage.readReviews() : [];
 
@@ -162,6 +165,41 @@ function handleThemeToggle() {
   applyTheme(nextTheme);
 }
 
+function syncReviewsFromCookies() {
+  userReviews = reviewStorage ? reviewStorage.readReviews() : [];
+  renderReviews();
+}
+
+function updateCookieBanner() {
+  const consent = reviewStorage ? reviewStorage.getConsent() : "unknown";
+  const shouldShowBanner = consent === "unknown";
+
+  cookieBanner.hidden = !shouldShowBanner;
+}
+
+function handleCookieAccept() {
+  if (!reviewStorage) {
+    return;
+  }
+
+  reviewStorage.setConsent("accepted");
+  updateCookieBanner();
+  syncReviewsFromCookies();
+  setStatus("Вы приняли cookie. Теперь отзывы будут сохраняться в браузере.", "success");
+}
+
+function handleCookieReject() {
+  if (!reviewStorage) {
+    return;
+  }
+
+  reviewStorage.setConsent("rejected");
+  reviewStorage.clearReviews();
+  syncReviewsFromCookies();
+  updateCookieBanner();
+  setStatus("Вы отклонили необязательные cookie. Отзывы сохраняться не будут.", "error");
+}
+
 function handleReviewSubmit(event) {
   event.preventDefault();
 
@@ -177,6 +215,13 @@ function handleReviewSubmit(event) {
 
   if (errors.name || errors.text) {
     setStatus("Исправьте ошибки в форме, чтобы добавить отзыв.", "error");
+    return;
+  }
+
+  if (!reviewStorage || reviewStorage.getConsent() !== "accepted") {
+    setStatus("Чтобы сохранить отзыв в cookie, сначала примите их в баннере внизу страницы.", "error");
+    updateCookieBanner();
+    cookieBanner.scrollIntoView({ behavior: "smooth", block: "end" });
     return;
   }
 
@@ -227,11 +272,14 @@ function attachVideoHoverPlayback() {
 function init() {
   renderReviews();
   applyTheme(readThemePreference());
+  updateCookieBanner();
   attachValidationHandlers();
   attachVideoHoverPlayback();
 
   themeToggleButton.addEventListener("click", handleThemeToggle);
   reviewForm.addEventListener("submit", handleReviewSubmit);
+  cookieAcceptButton.addEventListener("click", handleCookieAccept);
+  cookieRejectButton.addEventListener("click", handleCookieReject);
 }
 
 init();
